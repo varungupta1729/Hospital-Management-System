@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* --- CSS Variables for Theme and Consistency (Adapted for Patient Theme) --- */
+        :root {
+            --dark-bg: #0d1117;             /* Deep dark background */
+            --header-bg: #161b22;           /* Main card background */
+            --card-bg: #1e242c;             /* Inner section background */
+            --border-color: #30363d;        /* Subtle border for elements */
+            --text-color: #e6edf3;          /* Light text for readability */
+            --accent-orange: #ffa726;       /* Orange for patients */
+            --accent-orange-hover: #fb8c00;
+            --shadow-heavy: rgba(0, 0, 0, 0.8);
+        }
+
+        /* --- Global Styles --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 40px 20px;
+            overflow-y: auto;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInScaleUp {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseIcon {
+            0% { transform: scale(1); opacity: 0.05; }
+            50% { transform: scale(1.05); opacity: 0.08; }
+            100% { transform: scale(1); opacity: 0.05; }
+        }
+
+        /* --- Main Content Wrapper (The Card) --- */
+        .registration-wrapper {
+            background-color: var(--header-bg);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px var(--shadow-heavy);
+            width: 100%;
+            max-width: 650px;
+            animation: fadeInScaleUp 0.7s ease-out;
+            padding: 40px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .background-icon {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 18em;
+            color: var(--accent-orange); /* Changed for Patient theme */
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseIcon 5s infinite ease-in-out;
+        }
+
+        /* --- Header Section --- */
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-section h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--accent-orange); /* Changed for Patient theme */
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 167, 38, 0.4); /* Changed for Patient theme */
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        .header-section p {
+            font-size: 1.1em;
+            color: var(--text-color);
+            opacity: 0.85;
+            line-height: 1.6;
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        /* --- Form Section --- */
+        .form-section {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1em;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="date"], /* Added for date input */
+        select, /* For gender dropdown */
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-orange); /* Changed for Patient theme */
+            background-color: #1a1e26;
+            box-shadow: 0 0 0 4px rgba(255, 167, 38, 0.25); /* Changed for Patient theme */
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Styles for select element specifically */
+        select {
+            appearance: none; /* Remove default arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23e6edf3" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Custom arrow */
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 40px; /* Make space for the arrow */
+        }
+
+        .submit-btn {
+            margin-top: 35px;
+            width: 100%;
+            padding: 18px;
+            background-color: var(--accent-orange); /* Changed for Patient theme */
+            color: var(--dark-bg);
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 167, 38, 0.5); /* Changed for Patient theme */
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--accent-orange-hover); /* Changed for Patient theme */
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 12px 30px rgba(255, 167, 38, 0.7); /* Changed for Patient theme */
+        }
+
+        /* --- Responsive Design --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            .registration-wrapper {
+                padding: 30px;
+            }
+
+            .header-section h1 {
+                font-size: 2.2em;
+            }
+
+            .header-section p {
+                font-size: 1em;
+            }
+
+            .background-icon {
+                font-size: 12em;
+                top: -10px;
+                right: -10px;
+            }
+
+            .form-section {
+                padding: 25px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            label {
+                font-size: 0.95em;
+            }
+
+            input[type="text"],
+            input[type="date"],
+            select,
+            textarea {
+                padding: 12px;
+                font-size: 0.95em;
+            }
+
+            textarea {
+                min-height: 100px;
+            }
+
+            .submit-btn {
+                padding: 16px;
+                font-size: 1.1em;
+                margin-top: 30px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .registration-wrapper {
+                padding: 25px;
+                border-radius: 15px;
+            }
+
+            .header-section h1 {
+                font-size: 1.8em;
+                margin-bottom: 8px;
+            }
+
+            .header-section p {
+                font-size: 0.9em;
+                max-width: 100%;
+            }
+
+            .background-icon {
+                font-size: 8em;
+                top: -5px;
+                right: -5px;
+            }
+
+            .form-section {
+                padding: 20px;
+                border-radius: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            label {
+                font-size: 0.9em;
+                margin-bottom: 8px;
+            }
+
+            input[type="text"],
+            input[type="date"],
+            select,
+            textarea {
+                padding: 10px;
+                font-size: 0.9em;
+                border-radius: 8px;
+            }
+
+            textarea {
+                min-height: 80px;
+            }
+
+            .submit-btn {
+                padding: 14px;
+                font-size: 1em;
+                margin-top: 25px;
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="registration-wrapper">
+    <i class="fas fa-hospital-user background-icon"></i> <div class="header-section">
+    <h1>Patient Registration</h1>
+    <p>
+        We're glad you're here! Please fill out the form below to register as a new patient. Your health and privacy are our top priorities.
+    </p>
+</div>
+
+    <div class="form-section">
+        <form action="/patient/register" method="post">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="e.g., John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateOfBirth">Date of Birth</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="text" id="contactNumber" name="contactNumber" placeholder="e.g., +91 99887 76655" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" placeholder="e.g., 123 Health Street, Bengaluru" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="medicalHistory">Medical History (Optional)</label>
+                <textarea id="medicalHistory" name="medicalHistory" placeholder="e.g., Asthma, Penicillin Allergy, Previous Surgeries"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Register Patient</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

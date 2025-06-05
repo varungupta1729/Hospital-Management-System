@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* --- CSS Variables for Theme and Consistency --- */
+        :root {
+            --dark-bg: #0d1117;             /* Deep dark background */
+            --header-bg: #161b22;           /* Slightly lighter header background - used for card now */
+            --card-bg: #1e242c;             /* Card background - used for inner sections */
+            --border-color: #30363d;        /* Subtle border for elements */
+            --text-color: #e6edf3;          /* Light text for readability */
+            --accent-cyan: #00bcd4;         /* Cyan for doctors */
+            --accent-cyan-hover: #0097a7;
+            --shadow-heavy: rgba(0, 0, 0, 0.8);
+        }
+
+        /* --- Global Styles --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column; /* Allows content to stack and scroll */
+            justify-content: flex-start; /* Align content to top */
+            align-items: center;
+            min-height: 100vh; /* Minimum height for full viewport */
+            box-sizing: border-box;
+            padding: 40px 20px; /* Overall padding for the page */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInScaleUp {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseIcon {
+            0% { transform: scale(1); opacity: 0.05; }
+            50% { transform: scale(1.05); opacity: 0.08; }
+            100% { transform: scale(1); opacity: 0.05; }
+        }
+
+        /* --- Main Content Wrapper (The "Good Looking" Card) --- */
+        .registration-wrapper {
+            background-color: var(--header-bg); /* Main card background */
+            border-radius: 20px; /* More rounded corners */
+            box-shadow: 0 15px 40px var(--shadow-heavy); /* Deeper, softer shadow */
+            width: 100%;
+            max-width: 650px; /* Optimized width for forms */
+            animation: fadeInScaleUp 0.7s ease-out;
+            padding: 40px; /* Inner padding for the wrapper */
+            box-sizing: border-box; /* Include padding in width */
+            position: relative; /* For the background icon */
+            overflow: hidden; /* Ensures icon doesn't overflow */
+        }
+
+        .background-icon {
+            position: absolute;
+            top: -20px; /* Position slightly off-center */
+            right: -20px;
+            font-size: 18em; /* Large icon for visual flair */
+            color: var(--accent-cyan);
+            opacity: 0.03; /* Very subtle */
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseIcon 5s infinite ease-in-out;
+        }
+
+        /* --- Header Section --- */
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1; /* Ensure text is above background icon */
+        }
+
+        .header-section h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            font-size: 2.8em; /* Larger, more impactful title */
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 188, 212, 0.4);
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        .header-section p {
+            font-size: 1.1em; /* Clearer introductory text */
+            color: var(--text-color);
+            opacity: 0.85;
+            line-height: 1.6;
+            max-width: 90%;
+            margin: 0 auto; /* Center paragraph */
+        }
+
+        /* --- Form Section --- */
+        .form-section {
+            background-color: var(--card-bg); /* Inner section background */
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 25px; /* Ample spacing between fields */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px; /* Space between label and input */
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1em;
+            letter-spacing: 0.5px; /* Slightly increased letter spacing */
+        }
+
+        input[type="text"],
+        input[type="email"], /* Good practice to include */
+        textarea {
+            width: 100%;
+            padding: 15px; /* Generous padding */
+            border: 1px solid var(--border-color);
+            border-radius: 10px; /* Slightly more rounded inputs */
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-sizing: border-box; /* Ensures padding doesn't expand width */
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            background-color: #1a1e26; /* Slightly lighter on focus */
+            box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.25); /* Stronger glow */
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px; /* Taller textarea */
+        }
+
+        .submit-btn {
+            margin-top: 35px;
+            width: 100%;
+            padding: 18px; /* Large, clickable button */
+            background-color: var(--accent-cyan);
+            color: var(--dark-bg); /* Dark text on bright button */
+            font-size: 1.2em; /* Prominent text */
+            font-weight: 700;
+            border: none;
+            border-radius: 10px; /* Matches inputs */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 188, 212, 0.5); /* Significant shadow */
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--accent-cyan-hover);
+            transform: translateY(-4px) scale(1.01); /* More dynamic lift */
+            box-shadow: 0 12px 30px rgba(0, 188, 212, 0.7); /* Even stronger shadow */
+        }
+
+        /* --- Responsive Design --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 30px 15px; /* Adjust page padding for tablets */
+            }
+
+            .registration-wrapper {
+                padding: 30px; /* Reduce internal padding */
+            }
+
+            .header-section h1 {
+                font-size: 2.2em; /* Smaller title */
+            }
+
+            .header-section p {
+                font-size: 1em;
+            }
+
+            .background-icon {
+                font-size: 12em;
+                top: -10px;
+                right: -10px;
+            }
+
+            .form-section {
+                padding: 25px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            label {
+                font-size: 0.95em;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            textarea {
+                padding: 12px;
+                font-size: 0.95em;
+            }
+
+            textarea {
+                min-height: 100px;
+            }
+
+            .submit-btn {
+                padding: 16px;
+                font-size: 1.1em;
+                margin-top: 30px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            body {
+                padding: 20px 10px; /* Further reduce page padding for small phones */
+            }
+
+            .registration-wrapper {
+                padding: 25px;
+                border-radius: 15px; /* Slightly less rounded */
+            }
+
+            .header-section h1 {
+                font-size: 1.8em; /* Even smaller title */
+                margin-bottom: 8px;
+            }
+
+            .header-section p {
+                font-size: 0.9em;
+                max-width: 100%;
+            }
+
+            .background-icon {
+                font-size: 8em;
+                top: -5px;
+                right: -5px;
+            }
+
+            .form-section {
+                padding: 20px;
+                border-radius: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            label {
+                font-size: 0.9em;
+                margin-bottom: 8px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            textarea {
+                padding: 10px;
+                font-size: 0.9em;
+                border-radius: 8px;
+            }
+
+            textarea {
+                min-height: 80px;
+            }
+
+            .submit-btn {
+                padding: 14px;
+                font-size: 1em;
+                margin-top: 25px;
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="registration-wrapper">
+    <i class="fas fa-user-md background-icon"></i>
+
+    <div class="header-section">
+        <h1>Doctor Registration</h1>
+        <p>
+            Welcome to our medical team! We're excited to have you on board. Please fill out the form below to complete your registration and begin providing excellent care.
+        </p>
+    </div>
+
+    <div class="form-section">
+        <form action="/doctor/register" method="post">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="e.g., Dr. Jane Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="specialization">Specialization</label>
+                <input type="text" id="specialization" name="specialization" placeholder="e.g., General Surgery, Dermatology" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="text" id="contactNumber" name="contactNumber" placeholder="e.g., +91 98765 43210" required>
+            </div>
+
+
+            <div class="form-group">
+                <label for="availabilitySchedule">Availability Schedule</label>
+                <textarea id="availabilitySchedule" name="availabilitySchedule" placeholder="e.g., Monday-Friday: 9:00 AM - 5:00 PM"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Register Doctor</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

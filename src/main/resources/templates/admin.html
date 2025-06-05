@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@400;700;900&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* --- CSS Variables for Theme and Consistency --- */
+        :root {
+            --dark-bg: #0d1117;             /* Deep dark background */
+            --header-bg: #161b22;           /* Slightly lighter header background */
+            --card-bg: #1e242c;             /* Card background */
+            --border-color: #30363d;        /* Subtle border for elements */
+            --text-color: #e6edf3;          /* Light text for readability */
+            --accent-blue: #58a6ff;         /* Primary blue accent */
+            --accent-green: #238636;        /* Green for success/add/billing */
+            --accent-green-hover: #2ea043;
+            --accent-orange: #ffa726;       /* Orange for patients */
+            --accent-orange-hover: #fb8c00;
+            --accent-cyan: #00bcd4;         /* Cyan for doctors */
+            --accent-cyan-hover: #0097a7;
+            --accent-purple: #ab47bc;       /* Purple for appointments */
+            --accent-purple-hover: #9c27b0;
+            --logout-bg: #82cfff;           /* Lighter blue for logout */
+            --logout-hover: #4da3ff;
+            --shadow-light: rgba(0, 0, 0, 0.4);
+            --shadow-medium: rgba(0, 0, 0, 0.6);
+            --shadow-heavy: rgba(0, 0, 0, 0.8);
+        }
+
+        /* --- Global Styles --- */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Animations for Logos/Icons --- */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.05); opacity: 0.15; }
+            100% { transform: scale(1); opacity: 0.1; }
+        }
+
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Header Section --- */
+        .header {
+            background-color: var(--header-bg);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            animation: fadeInSlideUp 0.8s ease-out;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--accent-blue);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 2.8em;
+            text-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+            letter-spacing: 1.5px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            color: var(--text-color);
+            font-size: 1em;
+            opacity: 0.8;
+        }
+
+        .logout-button {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 10px 18px;
+            background-color: var(--logout-bg);
+            color: #000;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .logout-button:hover {
+            background-color: var(--logout-hover);
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Main Dashboard Content Flex Container --- */
+        .dashboard-container {
+            flex-grow: 1;
+            display: flex;
+            padding: 30px 20px;
+            gap: 25px;
+            align-items: flex-start;
+        }
+
+        /* --- Counters Section (Left Side Panel) --- */
+        .counters-section {
+            flex: 0 0 280px;
+            background-color: var(--header-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px var(--shadow-heavy);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeInSlideUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .counters-section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8em;
+            color: var(--accent-blue);
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .count-item {
+            text-align: center;
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            flex-shrink: 0;
+        }
+        .count-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-medium);
+        }
+
+        .count-item h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+
+        .count-number {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 4em;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1;
+            text-shadow: 0 0 20px currentColor;
+            position: relative;
+            z-index: 1;
+        }
+
+        .count-item .icon-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10em;
+            color: currentColor;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        .count-item:hover .icon-background {
+            transform: translate(-50%, -50%) rotate(5deg) scale(1.05);
+            opacity: 0.05;
+        }
+
+        /* Specific count colors */
+        .count-item.patient .icon-background { content: "\f478"; }
+        .count-item.patient h2, .count-item.patient .count-number { color: var(--accent-orange); }
+
+        .count-item.doctor .icon-background { content: "\f0f0"; }
+        .count-item.doctor h2, .count-item.doctor .count-number { color: var(--accent-cyan); }
+
+        .count-item.appointments .icon-background { content: "\f073"; }
+        .count-item.appointments h2, .count-item.appointments .count-number { color: var(--accent-purple); }
+
+        .count-item.billing .icon-background { content: "\f53c"; }
+        .count-item.billing h2, .count-item.billing .count-number { color: var(--accent-green); }
+
+
+        /* --- Main Content Area (Rest of the Dashboard) --- */
+        .main-dashboard-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .panels-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* --- Left & Right Panel Styling (Doctor/Patient) --- */
+        .panel {
+            flex: 1;
+            min-width: 350px;
+            max-width: 550px;
+            background-color: var(--header-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 6px 18px var(--shadow-medium);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInSlideUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8em;
+            letter-spacing: 0.8px;
+        }
+
+        .panel.doctors .panel-header h2 { color: var(--accent-cyan); }
+        .panel.patients .panel-header h2 { color: var(--accent-orange); }
+
+        /* Animated Panel Logo */
+        .panel .panel-logo {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 3em;
+            opacity: 0.08;
+            color: currentColor;
+            animation: pulse 3s infinite ease-in-out;
+        }
+        .panel.doctors .panel-logo { color: var(--accent-cyan); }
+        .panel.patients .panel-logo { color: var(--accent-orange); }
+
+        /* --- Card Styles (inside panels) --- */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 3px 8px var(--shadow-light);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 150px;
+            animation: fadeInSlideUp 0.6s ease-out var(--animation-delay, 0s) backwards;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px var(--shadow-medium);
+            background-color: #232a35;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.9;
+            flex-grow: 1;
+            margin-bottom: 18px;
+        }
+
+        .card a {
+            padding: 9px 18px;
+            border-radius: 7px;
+            font-weight: 600;
+            font-size: 0.9em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            color: #000;
+            text-decoration: none; /* Add this line */
+        }
+
+        .card a:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        /* Doctor specific card colors */
+        .doctor-card h3 { color: var(--accent-cyan); }
+        .doctor-btn { background-color: var(--accent-cyan); }
+        .doctor-btn:hover { background-color: var(--accent-cyan-hover); }
+
+        /* Patient specific card colors */
+        .patient-card h3 { color: var(--accent-orange); }
+        .patient-btn { background-color: var(--accent-orange); }
+        .patient-btn:hover { background-color: var(--accent-orange-hover); }
+
+
+        /* --- Global Action Cards (below panels) --- */
+        .global-actions {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            animation: fadeInSlideUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .global-action-card {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 6px 18px var(--shadow-medium);
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .global-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px var(--shadow-heavy);
+        }
+
+        .global-action-card h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.7em;
+            margin-bottom: 12px;
+        }
+
+        .global-action-card p {
+            font-size: 0.95em;
+            opacity: 0.9;
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        .global-action-card a {
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1em;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            text-decoration: none; /* Add this line */
+        }
+
+        .global-action-card a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Specific global action card colors */
+        .appointment-card h2 { color: var(--accent-purple); }
+        .appointment-btn { background-color: var(--accent-purple); }
+        .appointment-btn:hover { background-color: var(--accent-purple-hover); }
+
+        .billing-card h2 { color: var(--accent-green); }
+        .billing-btn { background-color: var(--accent-green); }
+        .billing-btn:hover { background-color: var(--accent-green-hover); }
+
+        /* --- Footer Section --- */
+        .footer {
+            background-color: var(--header-bg);
+            padding: 20px;
+            text-align: center;
+            border-top: 2px solid var(--border-color);
+            box-shadow: 0 -4px 15px var(--shadow-light);
+            margin-top: auto; /* Pushes the footer to the bottom */
+            color: var(--text-color);
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+
+        /* --- Responsive Design --- */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                flex-direction: column;
+                padding: 25px 15px;
+                gap: 20px;
+            }
+            .counters-section {
+                flex: none;
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: flex-start;
+                padding: 20px 15px;
+                gap: 20px;
+            }
+            .counters-section-title {
+                display: none;
+            }
+            .count-item {
+                flex: 1;
+                min-width: 200px;
+                max-width: 280px;
+            }
+            .main-dashboard-content {
+                width: 100%;
+            }
+            .panels-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            .panel {
+                min-width: unset;
+                width: 95%;
+            }
+            .global-actions {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            .global-action-card {
+                width: 95%;
+                max-width: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 15px;
+            }
+            .header h1 {
+                font-size: 2.2em;
+            }
+            .header p {
+                font-size: 0.85em;
+            }
+            .logout-button {
+                position: static;
+                transform: none;
+                margin-top: 15px;
+                font-size: 0.8em;
+                padding: 8px 12px;
+            }
+            .panels-row, .global-actions {
+                gap: 15px;
+            }
+            .panel {
+                padding: 20px;
+                gap: 15px;
+            }
+            .panel-header h2 {
+                font-size: 1.6em;
+            }
+            .panel .panel-logo {
+                font-size: 2.5em;
+            }
+            .card h3 {
+                font-size: 1.1em;
+            }
+            .card p {
+                font-size: 0.85em;
+            }
+            .card a {
+                font-size: 0.85em;
+                padding: 7px 12px;
+            }
+            .global-action-card h2 {
+                font-size: 1.4em;
+            }
+            .global-action-card p {
+                font-size: 0.9em;
+            }
+            .global-action-card a {
+                padding: 8px 18px;
+                font-size: 0.9em;
+            }
+            .counters-section {
+                padding: 20px 15px;
+                gap: 15px;
+            }
+            .count-item h2 {
+                font-size: 1.3em;
+            }
+            .count-number {
+                font-size: 3.5em;
+            }
+            .count-item .icon-background {
+                font-size: 7em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .panel, .global-action-card, .count-item {
+                padding: 15px;
+                gap: 10px;
+            }
+            .panel-header h2 {
+                font-size: 1.4em;
+            }
+            .panel .panel-logo {
+                font-size: 2em;
+            }
+            .card h3 {
+                font-size: 1em;
+            }
+            .card p {
+                font-size: 0.8em;
+                margin-bottom: 12px;
+            }
+            .card a {
+                font-size: 0.8em;
+                padding: 6px 10px;
+            }
+            .global-action-card h2 {
+                font-size: 1.2em;
+            }
+            .global-action-card p {
+                font-size: 0.85em;
+            }
+            .global-action-card a {
+                padding: 7px 15px;
+                font-size: 0.85em;
+            }
+            .count-item h2 {
+                font-size: 1.1em;
+            }
+            .count-number {
+                font-size: 2.8em;
+            }
+            .count-item .icon-background {
+                font-size: 6em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Admin Command Center</h1>
+    <p th:text="${message}">Oversee and manage all critical operations.</p>
+    <a th:href="@{/logout}" class="logout-button">Sign Out</a>
+</div>
+
+<div class="dashboard-container">
+    <div class="counters-section">
+        <h2 class="counters-section-title"><i class="fas fa-chart-bar"></i> Key Metrics</h2>
+        <div class="count-item patient" style="--animation-delay: 0.7s;">
+            <i class="fas fa-user-injured icon-background"></i>
+            <h2>Active Patients</h2>
+            <p class="count-number" th:text="${noOfPatients}">42</p>
+        </div>
+        <div class="count-item doctor" style="--animation-delay: 0.8s;">
+            <i class="fas fa-user-md icon-background"></i>
+            <h2>Available Doctors</h2>
+            <p class="count-number" th:text="${noOfDoctors}">15</p>
+        </div>
+        <div class="count-item appointments" style="--animation-delay: 0.9s;">
+            <i class="fas fa-calendar-check icon-background"></i>
+            <h2>Total Appointments</h2>
+            <p class="count-number">120</p>
+        </div>
+        <div class="count-item billing" style="--animation-delay: 1.0s;">
+            <i class="fas fa-file-invoice-dollar icon-background"></i>
+            <h2>Total Billing</h2>
+            <p class="count-number">250</p>
+        </div>
+    </div>
+
+    <div class="main-dashboard-content">
+        <div class="panels-row">
+            <div class="panel doctors">
+                <i class="fas fa-stethoscope panel-logo"></i>
+                <div class="panel-header">
+                    <h2><i class="fas fa-user-md"></i> Doctor Management</h2>
+                </div>
+                <div class="card doctor-card" style="--animation-delay: 0.3s;">
+                    <h3>Medical Staff Directory</h3>
+                    <p>Browse doctor profiles, specialties, and manage their availability.</p>
+                    <a th:href="@{/doctors}" class="doctor-btn">View Doctors</a>
+                </div>
+                <div class="card doctor-card" style="--animation-delay: 0.4s;">
+                    <h3>Recruit New Doctor</h3>
+                    <p>Expand our medical team by adding new doctor profiles to the system.</p>
+                    <a th:href="@{/doctorRegister}" class="doctor-btn">Register Doctor</a>
+                </div>
+            </div>
+
+            <div class="panel patients">
+                <i class="fas fa-notes-medical panel-logo"></i>
+                <div class="panel-header">
+                    <h2><i class="fas fa-hospital-user"></i> Patient Management</h2>
+                </div>
+                <div class="card patient-card" style="--animation-delay: 0.3s;">
+                    <h3>Patient Roster</h3>
+                    <p>Access and update detailed records for all registered patients.</p>
+                    <a th:href="@{/patientDetails}" class="patient-btn">View Patients</a>
+                </div>
+                <div class="card patient-card" style="--animation-delay: 0.4s;">
+                    <h3>Onboard New Patient</h3>
+                    <p>Effortlessly register new patients and get them started with our services.</p>
+                    <a th:href="@{/patientRegister}" class="patient-btn">Register Patient</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="global-actions">
+            <div class="global-action-card appointment-card" style="--animation-delay: 0.5s;">
+                <h2><i class="fas fa-calendar-alt"></i> Appointment Schedule</h2>
+                <p>View, modify, and track all patient appointments in real-time.</p>
+                <a th:href="@{/allappointment}" class="appointment-btn">Manage Appointments</a>
+            </div>
+
+            <div class="global-action-card billing-card" style="--animation-delay: 0.6s;">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Financial Overview</h2>
+                <p>Access and manage all billing records, payments, and invoices.</p>
+                <a th:href="@{/billing/getBillDetails}" class="billing-btn">View Billing</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    &copy; 2025 Hospital Management System. All rights reserved.
+</div>
+</body>
+</html>

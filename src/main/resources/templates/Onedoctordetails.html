@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Details</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        .doctor-container {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 0 10px #ffa726;
+        }
+
+        h2 {
+            color: #ffa726;
+            text-align: center;
+        }
+
+        .doctor-info {
+            margin-top: 20px;
+        }
+
+        .doctor-info p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #00bcd4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="doctor-container">
+    <h2 th:text="${doctor.name}">Doctor Name</h2>
+
+    <div class="doctor-info">
+        <p><span class="label">Doctor ID:</span> <span th:text="${doctor.doctorId}"></span></p>
+        <p><span class="label">Specialization:</span> <span th:text="${doctor.specialization}"></span></p>
+        <p><span class="label">Contact Number:</span> <span th:text="${doctor.contactNumber}"></span></p>
+        <p><span class="label">Availability:</span> <span th:text="${doctor.availabilitySchedule}"></span></p>
+    </div>
+</div>
+
+</body>
+</html>
+
