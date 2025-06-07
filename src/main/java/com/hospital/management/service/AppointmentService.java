@@ -150,5 +150,10 @@ public class AppointmentService {
         return appointmentRepository.findByPatient_PatientId(patientId);
     }
 
+    public long getTotalAppointments() {
+        return appointmentRepository.count();
+    }
+
+
     // Additional methods like getDoctorDashboardStats, getTodaysAppointmentsForDoctor, etc., remain here.
 }

@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
 
+    long count();
+
     @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId AND a.appointmentDate = :appointmentDate AND a.timeSlot = :timeSlot")
     Optional<Appointment> findByDoctorAndAppointmentDateAndTimeSlot(@Param("doctorId") int doctorId,
                                                                     @Param("appointmentDate") Date appointmentDate,

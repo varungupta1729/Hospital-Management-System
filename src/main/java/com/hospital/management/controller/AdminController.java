@@ -4,6 +4,7 @@ import com.hospital.management.model.Doctor;
 import com.hospital.management.model.Patient;
 import com.hospital.management.repository.DoctorRepository;
 import com.hospital.management.repository.PatientRepository;
+import com.hospital.management.service.AppointmentService;
 import com.hospital.management.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,17 +23,20 @@ public class AdminController {
     private final DoctorService doctorService;
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
+    private final AppointmentService appointmentService;
 
     @Autowired
-    public AdminController(PatientService patientService, DoctorService doctorService, DoctorRepository doctorRepository, PatientRepository patientRepository){
+    public AdminController(PatientService patientService, DoctorService doctorService, DoctorRepository doctorRepository, PatientRepository patientRepository, AppointmentService appointmentService){
         this.patientService=patientService;
         this.doctorService=doctorService;
         this.patientRepository=patientRepository;
         this.doctorRepository=doctorRepository;
+        this.appointmentService = appointmentService;
     }
     @GetMapping("/admin")
     public String adminPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         // Display a hello message with the username
+        model.addAttribute("appointmentCount" , appointmentService.getTotalAppointments());
         model.addAttribute("message", "Hello " + userDetails.getUsername() + ", you are logged in as Admin.");
         model.addAttribute("noOfPatients",patientRepository.count());
         model.addAttribute("noOfDoctors",doctorRepository.count());
