@@ -3,28 +3,12 @@ package com.hospital.management.controller;
 import com.hospital.management.model.Appointment;
 import com.hospital.management.model.Doctor;
 import com.hospital.management.model.Patient;
-import com.hospital.management.model.User;
-import com.hospital.management.repository.AppointmentRepository;
-import com.hospital.management.repository.DoctorRepository;
-import com.hospital.management.repository.PatientRepository;
 import com.hospital.management.repository.UserRepository;
 import com.hospital.management.service.AppointmentService;
 
 import com.hospital.management.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.hospital.management.model.Appointment;
-import com.hospital.management.model.Doctor;
-import com.hospital.management.model.Patient;
-import com.hospital.management.repository.AppointmentRepository;
-import com.hospital.management.repository.DoctorRepository;
-import com.hospital.management.repository.PatientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
