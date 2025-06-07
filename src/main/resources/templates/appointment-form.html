@@ -334,7 +334,7 @@
 
             <div>
                 <label for="appointmentDate">Appointment Date:</label>
-                <input type="date" id="appointmentDate" th:field="*{appointmentDate}" name="appointmentDate" required />
+                <input type="date" id="appointmentDate" th:field="*{appointmentDate}" name="appointmentDate"   th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required />
             </div>
 
             <div>
